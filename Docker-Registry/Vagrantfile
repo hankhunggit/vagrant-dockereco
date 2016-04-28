@@ -1,0 +1,17 @@
+VAGRANTFILE_API_VERSION = "2"
+Vagrant.require_version ">= 1.7.2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+    config.vm.define "register01", primary: true do |node|
+        node.vm.box = "puppetlabs/centos-7.0-64-puppet"
+        node.vm.network "private_network", ip: "192.168.50.21"
+        node.vm.provision "hosts" do |hosts|
+            hosts.add_host '192.168.50.21', ['register01.angus.com', 'register01']
+        end
+        node.vm.provider "virtualbox" do |vb|
+            vb.customize ["modifyvm", :id, "--memory", "512"]
+        end
+	node.vm.provision "shell", path: "provision.sh"
+    end
+end

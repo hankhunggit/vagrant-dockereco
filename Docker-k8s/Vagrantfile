@@ -1,0 +1,30 @@
+VAGRANTFILE_API_VERSION = "2"
+Vagrant.require_version ">= 1.7.2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+    config.vm.define "k8s-master", primary: true do |node|
+        node.vm.box = "puppetlabs/centos-7.0-64-puppet"
+        node.vm.network "private_network", ip: "192.168.50.20"
+        node.vm.provision "hosts" do |hosts|
+            hosts.add_host '192.168.50.20', ['k8s-master.angus.com', 'k8s-master']
+        end
+        node.vm.provider "virtualbox" do |vb|
+            vb.customize ["modifyvm", :id, "--memory", "512"]
+        end
+	node.vm.provision "shell", path: "provision.sh"
+    end
+
+    config.vm.define "k8s-minion01", primary: true do |node|
+        node.vm.box = "puppetlabs/centos-7.0-64-puppet"
+        node.vm.network "private_network", ip: "192.168.50.30"
+        node.vm.provision "hosts" do |hosts|
+            hosts.add_host '192.168.50.30', ['k8s-minion01.angus.com', 'k8s-minion01']
+        end
+        node.vm.provider "virtualbox" do |vb|
+            vb.customize ["modifyvm", :id, "--memory", "512"]
+        end
+        node.vm.provision "shell", path: "provision.sh"
+    end
+
+end

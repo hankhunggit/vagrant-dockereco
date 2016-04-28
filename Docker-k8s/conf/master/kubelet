@@ -1,0 +1,6 @@
+DDRESS="--address=0.0.0.0"
+KUBELET_PORT="--port=10250"
+# change the hostname to this host's IP address
+KUBELET_HOSTNAME="--hostname_override=192.168.50.30"
+KUBELET_API_SERVER="--api_servers=http://192.168.50.20:8080"
+KUBELET_ARGS=""
